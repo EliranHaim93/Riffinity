@@ -52,7 +52,7 @@
     <!-- Color legend for per-note mode -->
     @if (store.colorMode() === 'per-note') {
       <div class="note-color-legend">
-        @for (item of noteColorLegend; track item.name) {
+          @for (item of noteColorLegend(); track item.name) {
           <div class="legend-item" [matTooltip]="item.name">
             <span class="legend-dot" [style.background-color]="item.color"></span>
             <span class="legend-label">{{ item.name }}</span>

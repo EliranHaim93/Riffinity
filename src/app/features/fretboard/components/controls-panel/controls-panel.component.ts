@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
@@ -9,6 +9,11 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
+import {
+  CHROMATIC_NOTES_ALPHABETICAL,
+  CHROMATIC_NOTES_SOLFEGE,
+  NOTE_COLOR_BY_INDEX,
+} from '../../../../core/models/note.model';
 import { FretboardStore } from '../../../../core/store/fretboard.store';
 
 @Component({
@@ -31,20 +36,21 @@ import { FretboardStore } from '../../../../core/store/fretboard.store';
 export class ControlsPanelComponent {
   readonly store = inject(FretboardStore);
 
-  readonly noteColorLegend = [
-    { name: 'C',   color: '#FF4444' },
-    { name: 'C#',  color: '#FF7700' },
-    { name: 'D',   color: '#FFAA00' },
-    { name: 'D#',  color: '#FFD700' },
-    { name: 'E',   color: '#AACC00' },
-    { name: 'F',   color: '#44BB00' },
-    { name: 'F#',  color: '#00AA88' },
-    { name: 'G',   color: '#0099FF' },
-    { name: 'G#',  color: '#4455FF' },
-    { name: 'A',   color: '#8833FF' },
-    { name: 'A#',  color: '#CC00AA' },
-    { name: 'B',   color: '#FF2288' },
-  ];
+  /**
+   * Per-note color legend, derived from the canonical note constants so it
+   * stays in sync with `NOTE_COLOR_BY_INDEX` and follows the user's current
+   * naming choice (alphabetical vs. solfège).
+   */
+  readonly noteColorLegend = computed(() => {
+    const noteNames = this.store.noteNamingSystem() === 'alphabetical'
+      ? CHROMATIC_NOTES_ALPHABETICAL
+      : CHROMATIC_NOTES_SOLFEGE;
+
+    return noteNames.map((noteName, noteIndex) => ({
+      name: noteName,
+      color: NOTE_COLOR_BY_INDEX[noteIndex],
+    }));
+  });
 
   formattedInterval(): string {
     const intervalMs = this.store.generatorOptions().intervalMs;
