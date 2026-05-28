@@ -58,6 +58,8 @@
             },
             "development": {
               "optimization": {
+                "scripts": false,
+                "styles": false,
                 "fonts": false
               },
               "extractLicenses": false,
