@@ -9,11 +9,33 @@ export interface GeneratorOptions {
 }
 
 export const CHROMATIC_NOTES_ALPHABETICAL: readonly string[] = [
-  'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B',
+  'C',
+  'C#',
+  'D',
+  'D#',
+  'E',
+  'F',
+  'F#',
+  'G',
+  'G#',
+  'A',
+  'A#',
+  'B',
 ];
 
 export const CHROMATIC_NOTES_SOLFEGE: readonly string[] = [
-  'Do', 'Do#', 'Ré', 'Ré#', 'Mi', 'Fa', 'Fa#', 'Sol', 'Sol#', 'La', 'La#', 'Si',
+  'Do',
+  'Do#',
+  'Ré',
+  'Ré#',
+  'Mi',
+  'Fa',
+  'Fa#',
+  'Sol',
+  'Sol#',
+  'La',
+  'La#',
+  'Si',
 ];
 
 // Indices of natural (white-key) notes in the chromatic scale: C D E F G A B
@@ -36,22 +58,22 @@ export const NOTE_COLOR_BY_INDEX: readonly string[] = [
 ];
 
 // Colors for natural/accidental split color mode
-export const NATURAL_NOTE_COLOR = '#64B5F6';    // Light blue
+export const NATURAL_NOTE_COLOR = '#64B5F6'; // Light blue
 export const ACCIDENTAL_NOTE_COLOR = '#FF8A65'; // Deep orange
 
 export interface FretPosition {
   stringNumber: number; // 1 = high e, 6 = low E
-  fretNumber: number;   // 0 = open string, 1–12 = fretted
-  noteIndex: number;    // 0–11, where C = 0
+  fretNumber: number; // 0 = open string, 1–12 = fretted
+  noteIndex: number; // 0–11, where C = 0
   octave: number;
   frequencyHz: number;
 }
 
 export interface GuitarStringConfig {
   stringNumber: number;
-  stringName: string;        // 'e' | 'B' | 'G' | 'D' | 'A' | 'E'
-  openNoteIndex: number;
-  openOctave: number;
+  stringName: string; // 'e' | 'B' | 'G' | 'D' | 'A' | 'E'
+  openNoteIndex: number; // index of the note in the chromatic scale
+  openOctave: number; // octave of the note
   visualThicknessPx: number; // for the string line visual
 }
 
@@ -60,12 +82,12 @@ export interface GuitarStringConfig {
  * stringNumber 1 = high e (displayed at top), stringNumber 6 = low E (displayed at bottom).
  */
 export const GUITAR_STRING_CONFIGS: readonly GuitarStringConfig[] = [
-  { stringNumber: 1, stringName: 'e', openNoteIndex: 4,  openOctave: 4, visualThicknessPx: 1   },
+  { stringNumber: 1, stringName: 'e', openNoteIndex: 4, openOctave: 4, visualThicknessPx: 1 },
   { stringNumber: 2, stringName: 'B', openNoteIndex: 11, openOctave: 3, visualThicknessPx: 1.5 },
-  { stringNumber: 3, stringName: 'G', openNoteIndex: 7,  openOctave: 3, visualThicknessPx: 2   },
-  { stringNumber: 4, stringName: 'D', openNoteIndex: 2,  openOctave: 3, visualThicknessPx: 2.5 },
-  { stringNumber: 5, stringName: 'A', openNoteIndex: 9,  openOctave: 2, visualThicknessPx: 3   },
-  { stringNumber: 6, stringName: 'E', openNoteIndex: 4,  openOctave: 2, visualThicknessPx: 3.5 },
+  { stringNumber: 3, stringName: 'G', openNoteIndex: 7, openOctave: 3, visualThicknessPx: 2 },
+  { stringNumber: 4, stringName: 'D', openNoteIndex: 2, openOctave: 3, visualThicknessPx: 2.5 },
+  { stringNumber: 5, stringName: 'A', openNoteIndex: 9, openOctave: 2, visualThicknessPx: 3 },
+  { stringNumber: 6, stringName: 'E', openNoteIndex: 4, openOctave: 2, visualThicknessPx: 3.5 },
 ];
 
 // Fret inlay positions (matching a real guitar neck)
