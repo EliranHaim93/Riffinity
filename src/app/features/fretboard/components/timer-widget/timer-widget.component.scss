@@ -1,0 +1,120 @@
+.timer-widget {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+}
+
+/* ── Header ─────────────────────────────────────────────────── */
+.timer-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  align-self: flex-start;
+
+  .timer-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: var(--mat-sys-primary);
+  }
+
+  .timer-title {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--mat-sys-on-surface-variant);
+  }
+}
+
+/* ── Circular progress display ──────────────────────────────── */
+.timer-display {
+  position: relative;
+  width: 120px;
+  height: 120px;
+
+  .progress-ring {
+    width: 100%;
+    height: 100%;
+  }
+
+  .time-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+  }
+
+  .minutes-seconds {
+    font-size: 26px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--mat-sys-on-surface);
+    letter-spacing: -1px;
+  }
+
+  .timer-status-label {
+    font-size: 11px;
+    color: var(--mat-sys-on-surface-variant);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
+    &.done {
+      color: var(--mat-sys-primary);
+      font-weight: 600;
+    }
+  }
+}
+
+/* ── Duration presets ───────────────────────────────────────── */
+.duration-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+
+  .preset-btn {
+    font-size: 12px;
+    padding: 0 10px;
+    min-width: unset;
+    height: 30px;
+    border-radius: 15px !important;
+
+    &.is-selected {
+      background: var(--mat-sys-primary-container) !important;
+      color: var(--mat-sys-on-primary-container) !important;
+      border-color: var(--mat-sys-primary) !important;
+    }
+  }
+}
+
+/* ── Controls ───────────────────────────────────────────────── */
+.timer-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  .control-btn {
+    min-width: 110px;
+  }
+
+  .reset-btn {
+    opacity: 0.7;
+
+    &:not([disabled]):hover {
+      opacity: 1;
+    }
+  }
+}
+
+/* ── Progress text ──────────────────────────────────────────── */
+.elapsed-text {
+  font-size: 12px;
+  color: var(--mat-sys-on-surface-variant);
+  text-align: center;
+}

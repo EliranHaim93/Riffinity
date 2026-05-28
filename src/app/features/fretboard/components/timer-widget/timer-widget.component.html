@@ -1,0 +1,98 @@
+<div class="timer-widget">
+  <div class="timer-header">
+    <mat-icon class="timer-icon">timer</mat-icon>
+    <span class="timer-title">Practice Timer</span>
+  </div>
+
+  <!-- ── Circular progress display ─────────────────────────────── -->
+  <div class="timer-display">
+    <svg class="progress-ring" viewBox="0 0 120 120">
+      <!-- Track circle -->
+      <circle
+        cx="60" cy="60" r="50"
+        fill="none"
+        stroke="rgba(255,255,255,0.1)"
+        stroke-width="6"
+      />
+      <!-- Progress arc -->
+      <circle
+        cx="60" cy="60" r="50"
+        fill="none"
+        [attr.stroke]="progressColor()"
+        stroke-width="6"
+        stroke-linecap="round"
+        [attr.stroke-dasharray]="circumference"
+        [attr.stroke-dashoffset]="dashOffset()"
+        transform="rotate(-90 60 60)"
+        style="transition: stroke-dashoffset 1s linear"
+      />
+    </svg>
+    <div class="time-text">
+      <span class="minutes-seconds">{{ formattedTimeRemaining() }}</span>
+      @if (store.timerIsRunning()) {
+        <span class="timer-status-label">remaining</span>
+      } @else if (store.timerElapsedSeconds() > 0) {
+        <span class="timer-status-label done">done!</span>
+      }
+    </div>
+  </div>
+
+  <!-- ── Duration presets (only when idle) ─────────────────────── -->
+  @if (!store.timerIsRunning() && store.timerElapsedSeconds() === 0) {
+    <div class="duration-presets">
+      @for (preset of durationPresets; track preset.seconds) {
+        <button
+          mat-stroked-button
+          class="preset-btn"
+          [class.is-selected]="store.timerDurationSeconds() === preset.seconds"
+          (click)="store.setTimerDurationSeconds(preset.seconds)"
+        >
+          {{ preset.label }}
+        </button>
+      }
+    </div>
+  }
+
+  <!-- ── Controls ──────────────────────────────────────────────── -->
+  <div class="timer-controls">
+    @if (!store.timerIsRunning()) {
+      @if (store.timerRemainingSeconds() > 0) {
+        <button
+          mat-raised-button
+          color="primary"
+          class="control-btn"
+          (click)="store.startTimer()"
+        >
+          <mat-icon>play_arrow</mat-icon>
+          {{ store.timerElapsedSeconds() === 0 ? 'Start' : 'Resume' }}
+        </button>
+      }
+    } @else {
+      <button
+        mat-raised-button
+        class="control-btn"
+        (click)="store.pauseTimer()"
+      >
+        <mat-icon>pause</mat-icon>
+        Pause
+      </button>
+    }
+
+    <button
+      mat-icon-button
+      matTooltip="Reset timer"
+      (click)="store.resetTimer()"
+      [disabled]="store.timerElapsedSeconds() === 0 && !store.timerIsRunning()"
+      class="reset-btn"
+    >
+      <mat-icon>replay</mat-icon>
+    </button>
+  </div>
+
+  <!-- ── Progress text ─────────────────────────────────────────── -->
+  @if (store.timerIsRunning() || store.timerElapsedSeconds() > 0) {
+    <div class="elapsed-text">
+      Elapsed: {{ formattedElapsed() }} / {{ formattedTotal() }}
+    </div>
+  }
+</div>

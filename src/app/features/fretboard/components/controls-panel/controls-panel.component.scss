@@ -1,0 +1,117 @@
+.controls-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.panel-section {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: var(--mat-sys-primary);
+  }
+
+  .section-title {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--mat-sys-on-surface-variant);
+  }
+}
+
+/* ── Note naming & color mode toggles ───────────────────────── */
+.full-width-toggle {
+  width: 100%;
+
+  mat-button-toggle {
+    flex: 1;
+    font-size: 12px;
+  }
+}
+
+/* ── Per-note color legend ──────────────────────────────────── */
+.note-color-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: default;
+  }
+
+  .legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  }
+
+  .legend-label {
+    font-size: 11px;
+    color: var(--mat-sys-on-surface-variant);
+  }
+}
+
+/* ── Display section ────────────────────────────────────────── */
+.clear-action {
+  margin-top: 4px;
+
+  button {
+    width: 100%;
+    font-size: 13px;
+  }
+}
+
+/* ── Generator section ──────────────────────────────────────── */
+.generator-options {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.interval-control {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  .interval-label {
+    font-size: 13px;
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  .interval-slider {
+    width: 100%;
+  }
+}
+
+.generator-actions {
+  display: flex;
+  gap: 8px;
+
+  button {
+    flex: 1;
+    font-size: 12px;
+  }
+}
+
+.random-btn {
+  background: rgba(255, 255, 255, 0.08) !important;
+}

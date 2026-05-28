@@ -1,0 +1,20 @@
+<div class="cell-inner" (click)="handleClick()" [attr.title]="tooltipText()">
+  <!-- The string line runs horizontally through the cell center -->
+  <div class="string-line" [style.height.px]="stringThicknessPx()"></div>
+
+  <!-- Note dot – shown when marked, generated, or revealing all notes -->
+  @if (isDotVisible()) {
+    <div
+      class="note-dot"
+      [class.is-marked]="isMarked()"
+      [class.is-generated]="isGenerated()"
+      [style.background-color]="dotColor()"
+    >
+      @if (showNoteName()) {
+        <span class="note-label">{{ noteName() }}</span>
+      }
+    </div>
+  } @else {
+    <div class="hover-ring"></div>
+  }
+</div>
