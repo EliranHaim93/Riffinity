@@ -44,7 +44,7 @@ const INITIAL_STATE: FretboardState = {
     playSound: true,
     markPosition: true,
     showNoteName: true,
-    intervalMs: 2000,
+    intervalMs: 2,
   },
   currentGeneratedPosition: null,
   displayedGeneratedNoteName: null,
@@ -58,7 +58,7 @@ export const FretboardStore = signalStore(
     /** Set of "stringNumber-fretNumber" strings for O(1) marked-position lookups. */
     markedPositionKeySet: computed(() => {
       return new Set(
-        markedPositions().map(position => `${position.stringNumber}-${position.fretNumber}`),
+        markedPositions().map((position) => `${position.stringNumber}-${position.fretNumber}`),
       );
     }),
 
@@ -74,11 +74,7 @@ export const FretboardStore = signalStore(
   })),
 
   withMethods(
-    (
-      store,
-      fretboardService = inject(FretboardService),
-      audioService = inject(AudioService),
-    ) => {
+    (store, fretboardService = inject(FretboardService), audioService = inject(AudioService)) => {
       let timerIntervalId: ReturnType<typeof setInterval> | null = null;
       let generatorIntervalId: ReturnType<typeof setInterval> | null = null;
 
@@ -99,10 +95,7 @@ export const FretboardStore = signalStore(
       async function runGeneratorTick(): Promise<void> {
         const position = fretboardService.getRandomFretPosition(store.visibleFretCount());
         const options = store.generatorOptions();
-        const noteName = fretboardService.getNoteName(
-          position.noteIndex,
-          store.noteNamingSystem(),
-        );
+        const noteName = fretboardService.getNoteName(position.noteIndex, store.noteNamingSystem());
 
         patchState(store, {
           currentGeneratedPosition: options.markPosition ? position : null,
@@ -131,13 +124,13 @@ export const FretboardStore = signalStore(
         // ── Fret position interaction ────────────────────────────────────
         async onFretPositionClicked(clickedPosition: FretPosition): Promise<void> {
           const existingPositions = store.markedPositions();
-          const isAlreadyMarked = existingPositions.some(position =>
+          const isAlreadyMarked = existingPositions.some((position) =>
             fretboardService.isSamePosition(position, clickedPosition),
           );
 
           const updatedPositions = isAlreadyMarked
             ? existingPositions.filter(
-                position => !fretboardService.isSamePosition(position, clickedPosition),
+                (position) => !fretboardService.isSamePosition(position, clickedPosition),
               )
             : [...existingPositions, clickedPosition];
 

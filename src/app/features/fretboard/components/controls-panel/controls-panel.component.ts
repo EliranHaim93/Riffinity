@@ -42,9 +42,10 @@ export class ControlsPanelComponent {
    * naming choice (alphabetical vs. solfège).
    */
   readonly noteColorLegend = computed(() => {
-    const noteNames = this.store.noteNamingSystem() === 'alphabetical'
-      ? CHROMATIC_NOTES_ALPHABETICAL
-      : CHROMATIC_NOTES_SOLFEGE;
+    const noteNames =
+      this.store.noteNamingSystem() === 'alphabetical'
+        ? CHROMATIC_NOTES_ALPHABETICAL
+        : CHROMATIC_NOTES_SOLFEGE;
 
     return noteNames.map((noteName, noteIndex) => ({
       name: noteName,
@@ -54,6 +55,7 @@ export class ControlsPanelComponent {
 
   formattedInterval(): string {
     const intervalMs = this.store.generatorOptions().intervalMs;
-    return intervalMs >= 1000 ? `${intervalMs / 1000}s` : `${intervalMs}ms`;
+    const clampedMs = Math.min(Math.max(intervalMs, 0.5), 5);
+    return `${clampedMs}s`;
   }
 }

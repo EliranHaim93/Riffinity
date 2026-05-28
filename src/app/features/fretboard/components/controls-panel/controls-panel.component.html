@@ -1,5 +1,4 @@
 <div class="controls-panel">
-
   <!-- ── Note naming ─────────────────────────────────────────── -->
   <section class="panel-section">
     <div class="section-header">
@@ -52,7 +51,7 @@
     <!-- Color legend for per-note mode -->
     @if (store.colorMode() === 'per-note') {
       <div class="note-color-legend">
-          @for (item of noteColorLegend(); track item.name) {
+        @for (item of noteColorLegend(); track item.name) {
           <div class="legend-item" [matTooltip]="item.name">
             <span class="legend-dot" [style.background-color]="item.color"></span>
             <span class="legend-label">{{ item.name }}</span>
@@ -127,13 +126,7 @@
       <span class="interval-label">
         Interval: <strong>{{ formattedInterval() }}</strong>
       </span>
-      <mat-slider
-        class="interval-slider"
-        [min]="500"
-        [max]="5000"
-        [step]="500"
-        [discrete]="true"
-      >
+      <mat-slider class="interval-slider" [min]="0.5" [max]="5" [step]="0.5" [discrete]="true">
         <input
           matSliderThumb
           [value]="store.generatorOptions().intervalMs"
@@ -165,11 +158,7 @@
           Auto Play
         </button>
       } @else {
-        <button
-          mat-raised-button
-          color="warn"
-          (click)="store.stopGenerator()"
-        >
+        <button mat-raised-button color="warn" (click)="store.stopGenerator()">
           <mat-icon>stop</mat-icon>
           Stop
         </button>
