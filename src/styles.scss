@@ -1,1 +1,70 @@
-/* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+
+/* ── Material Design 3 dark theme with amber/gold primary ───── */
+html {
+  @include mat.theme(
+    (
+      color: (
+        theme-type: dark,
+        primary: mat.$yellow-palette,
+        tertiary: mat.$orange-palette,
+      ),
+      typography: (
+        plain-family: 'Inter, Roboto, sans-serif',
+        brand-family: 'Righteous, Roboto, sans-serif',
+      ),
+      density: 0,
+    )
+  );
+  color-scheme: dark;
+}
+
+/* ── Reset & base ────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', 'Roboto', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background: #0a0d14;
+  color: #e8eaf0;
+  overflow-x: hidden;
+}
+
+/* ── Scrollbar styling ───────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 3px;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.28);
+  }
+}
+
+/* ── Material component overrides ────────────────────────────── */
+.mat-mdc-card {
+  --mdc-elevated-card-container-color: rgba(255, 255, 255, 0.04);
+}
+
+.mat-mdc-chip.mat-mdc-standard-chip {
+  --mdc-chip-container-height: 28px;
+}

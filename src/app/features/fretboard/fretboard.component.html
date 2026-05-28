@@ -1,0 +1,138 @@
+<div class="fretboard-page" [class.solfege-mode]="store.noteNamingSystem() === 'solfege'">
+
+  <!-- ── Generated note overlay ───────────────────────────────── -->
+  @if (store.displayedGeneratedNoteName()) {
+    <div class="generated-note-banner">
+      <span class="generated-note-value">{{ store.displayedGeneratedNoteName() }}</span>
+      <span class="generated-note-subtitle">Find this note</span>
+    </div>
+  }
+
+  <!-- ── Main layout ─────────────────────────────────────────── -->
+  <div class="page-layout">
+
+    <!-- Sidebar: controls + timer -->
+    <aside class="sidebar">
+      <mat-card class="sidebar-card">
+        <app-controls-panel />
+        <mat-divider />
+        <app-timer-widget />
+      </mat-card>
+    </aside>
+
+    <!-- Center: fretboard -->
+    <main class="fretboard-area">
+
+      <!-- Status chips -->
+      <div class="status-bar">
+        @if (store.markedPositions().length > 0) {
+          <mat-chip-set>
+            <mat-chip highlighted color="primary">
+              <mat-icon matChipAvatar>room</mat-icon>
+              {{ store.markedPositions().length }} marked
+            </mat-chip>
+          </mat-chip-set>
+        }
+        @if (store.generatorIsRunning()) {
+          <mat-chip highlighted color="accent">
+            <mat-icon matChipAvatar>shuffle</mat-icon>
+            Auto-generating
+          </mat-chip>
+        }
+        @if (store.timerIsRunning()) {
+          <mat-chip highlighted>
+            <mat-icon matChipAvatar>timer</mat-icon>
+            {{ store.timerRemainingSeconds() }}s left
+          </mat-chip>
+        }
+      </div>
+
+      <!-- Fretboard scroll wrapper -->
+      <div class="fretboard-scroll">
+        <div class="fretboard-grid">
+
+          <!-- ── Fret number header ──────────────────────────── -->
+          <div class="grid-row header-row">
+            <div class="cell-string-label"></div>
+            <div class="cell-open-label fret-number-label">Open</div>
+            <div class="cell-nut"></div>
+            @for (fretNum of fretNumbers(); track fretNum) {
+              <div
+                class="fret-number-label"
+                [class.marker-fret]="hasSingleDotMarker(fretNum) || hasDoubleDotMarker(fretNum)"
+              >
+                {{ fretNum }}
+              </div>
+            }
+          </div>
+
+          <!-- ── String rows ─────────────────────────────────── -->
+          @for (stringConfig of guitarStringConfigs; let stringIndex = $index; track stringConfig.stringNumber) {
+            <div class="grid-row string-row">
+              <!-- String name -->
+              <div class="cell-string-label">
+                <span class="string-name" [class.low-string]="stringConfig.stringNumber >= 5">
+                  {{ stringConfig.stringName }}
+                </span>
+              </div>
+
+              <!-- Open-string cell (fret 0) -->
+              <app-fret-cell
+                [position]="fretboardPositions()[stringIndex][0]"
+                [isMarked]="isPositionMarked(fretboardPositions()[stringIndex][0])"
+                [isGenerated]="isGeneratedPosition(fretboardPositions()[stringIndex][0])"
+                [colorMode]="store.colorMode()"
+                [noteNamingSystem]="store.noteNamingSystem()"
+                [showNoteName]="store.showAllNoteNames()"
+                [stringThicknessPx]="stringConfig.visualThicknessPx"
+                (positionClicked)="onPositionClicked($event)"
+              />
+
+              <!-- Nut visual divider -->
+              <div class="cell-nut"></div>
+
+              <!-- Fretted cells (frets 1–N) -->
+              @for (position of fretboardPositions()[stringIndex].slice(1); track position.fretNumber) {
+                <app-fret-cell
+                  [position]="position"
+                  [isMarked]="isPositionMarked(position)"
+                  [isGenerated]="isGeneratedPosition(position)"
+                  [colorMode]="store.colorMode()"
+                  [noteNamingSystem]="store.noteNamingSystem()"
+                  [showNoteName]="store.showAllNoteNames()"
+                  [stringThicknessPx]="stringConfig.visualThicknessPx"
+                  (positionClicked)="onPositionClicked($event)"
+                />
+              }
+            </div>
+          }
+
+          <!-- ── Fret position marker dots ────────────────────── -->
+          <div class="grid-row markers-row">
+            <div class="cell-string-label"></div>
+            <div class="cell-open-label"></div>
+            <div class="cell-nut"></div>
+            @for (fretNum of fretNumbers(); track fretNum) {
+              <div class="marker-cell">
+                @if (hasSingleDotMarker(fretNum)) {
+                  <div class="inlay-dot"></div>
+                }
+                @if (hasDoubleDotMarker(fretNum)) {
+                  <div class="inlay-dot"></div>
+                  <div class="inlay-dot"></div>
+                }
+              </div>
+            }
+          </div>
+
+        </div><!-- /fretboard-grid -->
+      </div><!-- /fretboard-scroll -->
+
+      <!-- Tuning info -->
+      <p class="tuning-label">
+        Standard tuning – EADGBE &nbsp;|&nbsp; Click any position to play &amp; mark it
+      </p>
+
+    </main>
+  </div>
+</div>

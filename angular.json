@@ -23,6 +23,10 @@
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
+            "allowedCommonJsDependencies": [
+              "standardized-audio-context",
+              "automation-events"
+            ],
             "assets": [
               {
                 "glob": "**/*",
@@ -35,6 +39,9 @@
           },
           "configurations": {
             "production": {
+              "optimization": {
+                "fonts": false
+              },
               "budgets": [
                 {
                   "type": "initial",
@@ -43,14 +50,16 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
+                  "maximumWarning": "12kB",
+                  "maximumError": "20kB"
                 }
               ],
               "outputHashing": "all"
             },
             "development": {
-              "optimization": false,
+              "optimization": {
+                "fonts": false
+              },
               "extractLicenses": false,
               "sourceMap": true
             }

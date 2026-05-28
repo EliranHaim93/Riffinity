@@ -1,0 +1,237 @@
+/* ─── Page wrapper ──────────────────────────────────────────── */
+.fretboard-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 0 0 24px;
+  min-height: 0;
+}
+
+/* ─── Generated note banner ──────────────────────────────────── */
+.generated-note-banner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 32px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 213, 79, 0.12),
+    rgba(255, 255, 255, 0.03)
+  );
+  border: 1px solid rgba(255, 215, 80, 0.25);
+  border-radius: 16px;
+  animation: banner-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  .generated-note-value {
+    font-size: 80px;
+    font-weight: 800;
+    line-height: 1;
+    background: linear-gradient(135deg, #ffd54f, #ffab40);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -2px;
+    font-family: 'Righteous', 'Inter', sans-serif;
+  }
+
+  .generated-note-subtitle {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.45);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-top: 6px;
+  }
+}
+
+@keyframes banner-in {
+  from { opacity: 0; transform: translateY(-10px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0)     scale(1);    }
+}
+
+/* ─── Layout ─────────────────────────────────────────────────── */
+.page-layout {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+/* ─── Sidebar ────────────────────────────────────────────────── */
+.sidebar {
+  width: 280px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 16px;
+}
+
+.sidebar-card {
+  background: rgba(255, 255, 255, 0.035) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 16px !important;
+  overflow: hidden;
+}
+
+/* ─── Fretboard area ─────────────────────────────────────────── */
+.fretboard-area {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.status-bar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  min-height: 32px;
+  align-items: center;
+}
+
+/* ─── Fretboard scroll container ─────────────────────────────── */
+.fretboard-scroll {
+  overflow-x: auto;
+  border-radius: 16px;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.65),
+    0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+/* ─── CSS Grid fretboard ──────────────────────────────────────
+   Columns:
+     1 : string label   (48 px)
+     2 : open string    (64 px)
+     3 : nut divider    (7 px)
+     4–15 : frets 1–12  (≥ 56 px each, equal)
+   Rows:
+     1 : fret-number header  (30 px)
+     2–7: 6 strings          (52 px each)
+     8 : fret-marker dots    (24 px)
+────────────────────────────────────────────────────────────── */
+.fretboard-grid {
+  display: grid;
+  grid-template-columns: 48px 64px 7px repeat(12, minmax(56px, 1fr));
+  grid-template-rows: 30px repeat(6, 52px) 24px;
+  min-width: 860px;
+
+  /* Dark rosewood / ebony gradient */
+  background: linear-gradient(180deg, #1c0d03 0%, #2c1508 50%, #1c0d03 100%);
+}
+
+/*
+  Each logical row (.grid-row) spans all 15 columns and uses
+  CSS Subgrid so its direct children snap to the parent's column tracks.
+*/
+.grid-row {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
+  align-items: stretch;
+}
+
+/* ─── Nut divider column ─────────────────────────────────────── */
+.cell-nut {
+  background: linear-gradient(to right, #b89030, #f0d870, #e8cc55, #b89030);
+  box-shadow: inset -2px 0 6px rgba(0, 0, 0, 0.35);
+}
+
+/* ─── Header row ─────────────────────────────────────────────── */
+.header-row {
+  .cell-string-label,
+  .cell-open-label,
+  .fret-number-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.45);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  }
+}
+
+.cell-open-label {
+  font-size: 10px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.35);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.fret-number-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.35);
+
+  &.marker-fret {
+    color: rgba(255, 215, 80, 0.75);
+    font-weight: 700;
+  }
+}
+
+/* ─── String rows ────────────────────────────────────────────── */
+.string-row {
+  .cell-string-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.35);
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+  }
+}
+
+/* ─── String name labels ─────────────────────────────────────── */
+.string-name {
+  font-size: 15px;
+  font-weight: 700;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.55);
+  font-family: 'Georgia', serif;
+
+  &.low-string {
+    color: rgba(255, 215, 80, 0.72);
+  }
+}
+
+/* ─── Position marker dots row ───────────────────────────────── */
+.markers-row {
+  .cell-string-label,
+  .cell-open-label {
+    background: rgba(0, 0, 0, 0.3);
+  }
+}
+
+.marker-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.inlay-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgba(255, 245, 200, 0.45);
+  box-shadow: 0 0 5px rgba(255, 230, 130, 0.3);
+}
+
+/* ─── Tuning label ───────────────────────────────────────────── */
+.tuning-label {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.28);
+  text-align: center;
+  margin: 4px 0 0;
+  letter-spacing: 0.3px;
+}
+
+/* ─── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 960px) {
+  .page-layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    position: static;
+  }
+}
