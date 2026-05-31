@@ -44,7 +44,7 @@ const INITIAL_STATE: FretboardState = {
     playSound: true,
     markPosition: true,
     showNoteName: true,
-    intervalMs: 2,
+    intervalMs: 2000,
   },
   currentGeneratedPosition: null,
   displayedGeneratedNoteName: null,

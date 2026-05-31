@@ -129,8 +129,8 @@
       <mat-slider class="interval-slider" [min]="0.5" [max]="5" [step]="0.5" [discrete]="true">
         <input
           matSliderThumb
-          [value]="store.generatorOptions().intervalMs"
-          (valueChange)="store.updateGeneratorOptions({ intervalMs: $event })"
+          [value]="store.generatorOptions().intervalMs / 1000"
+          (valueChange)="store.updateGeneratorOptions({ intervalMs: $event * 1000 })"
         />
       </mat-slider>
     </div>

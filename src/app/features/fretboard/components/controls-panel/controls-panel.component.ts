@@ -54,8 +54,8 @@ export class ControlsPanelComponent {
   });
 
   formattedInterval(): string {
-    const intervalMs = this.store.generatorOptions().intervalMs;
-    const clampedMs = Math.min(Math.max(intervalMs, 0.5), 5);
-    return `${clampedMs}s`;
+    const intervalSec = this.store.generatorOptions().intervalMs / 1000;
+    const clamped = Math.min(Math.max(intervalSec, 0.5), 5);
+    return `${clamped}s`;
   }
 }
