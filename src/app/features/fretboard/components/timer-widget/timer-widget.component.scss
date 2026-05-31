@@ -1,3 +1,43 @@
+/* ── Accordion: strip Material defaults to match card design ─── */
+::ng-deep app-timer-widget {
+  mat-accordion .mat-expansion-panel {
+    background: transparent;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+
+    .mat-expansion-panel-header {
+      padding: 0 16px;
+      height: 48px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--mat-sys-on-surface-variant);
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.04) !important;
+      }
+
+      .mat-expansion-panel-header-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--mat-sys-on-surface-variant);
+      }
+
+      .mat-expansion-indicator::after {
+        color: var(--mat-sys-on-surface-variant);
+      }
+    }
+
+    .mat-expansion-panel-body {
+      padding: 0;
+    }
+  }
+}
+
+/* ── Timer body ─────────────────────────────────────────────── */
 .timer-widget {
   display: flex;
   flex-direction: column;
@@ -6,27 +46,11 @@
   padding: 16px;
 }
 
-/* ── Header ─────────────────────────────────────────────────── */
-.timer-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  align-self: flex-start;
-
-  .timer-icon {
-    font-size: 18px;
-    width: 18px;
-    height: 18px;
-    color: var(--mat-sys-primary);
-  }
-
-  .timer-title {
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    color: var(--mat-sys-on-surface-variant);
-  }
+.timer-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  color: var(--mat-sys-primary);
 }
 
 /* ── Circular progress display ──────────────────────────────── */

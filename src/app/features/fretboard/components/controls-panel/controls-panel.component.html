@@ -91,78 +91,84 @@
   <mat-divider />
 
   <!-- ── Note generator ──────────────────────────────────────── -->
-  <section class="panel-section">
-    <div class="section-header">
-      <mat-icon class="section-icon">shuffle</mat-icon>
-      <span class="section-title">Note Generator</span>
-    </div>
+  <mat-accordion>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon class="section-icon">shuffle</mat-icon>
+          Note Generator
+        </mat-panel-title>
+      </mat-expansion-panel-header>
 
-    <div class="generator-options">
-      <mat-checkbox
-        [checked]="store.generatorOptions().playSound"
-        (change)="store.updateGeneratorOptions({ playSound: $event.checked })"
-        color="primary"
-      >
-        Play sound
-      </mat-checkbox>
-      <mat-checkbox
-        [checked]="store.generatorOptions().markPosition"
-        (change)="store.updateGeneratorOptions({ markPosition: $event.checked })"
-        color="primary"
-      >
-        Mark position
-      </mat-checkbox>
-      <mat-checkbox
-        [checked]="store.generatorOptions().showNoteName"
-        (change)="store.updateGeneratorOptions({ showNoteName: $event.checked })"
-        color="primary"
-      >
-        Show note name
-      </mat-checkbox>
-    </div>
+      <section class="panel-section">
+        <div class="generator-options">
+          <mat-checkbox
+            [checked]="store.generatorOptions().playSound"
+            (change)="store.updateGeneratorOptions({ playSound: $event.checked })"
+            color="primary"
+          >
+            Play sound
+          </mat-checkbox>
+          <mat-checkbox
+            [checked]="store.generatorOptions().markPosition"
+            (change)="store.updateGeneratorOptions({ markPosition: $event.checked })"
+            color="primary"
+          >
+            Mark position
+          </mat-checkbox>
+          <mat-checkbox
+            [checked]="store.generatorOptions().showNoteName"
+            (change)="store.updateGeneratorOptions({ showNoteName: $event.checked })"
+            color="primary"
+          >
+            Show note name
+          </mat-checkbox>
+        </div>
 
-    <!-- Interval slider -->
-    <div class="interval-control">
-      <span class="interval-label">
-        Interval: <strong>{{ formattedInterval() }}</strong>
-      </span>
-      <mat-slider class="interval-slider" [min]="0.5" [max]="5" [step]="0.5" [discrete]="true">
-        <input
-          matSliderThumb
-          [value]="store.generatorOptions().intervalMs / 1000"
-          (valueChange)="store.updateGeneratorOptions({ intervalMs: $event * 1000 })"
-        />
-      </mat-slider>
-    </div>
+        <!-- Interval slider -->
+        <div class="interval-control">
+          <span class="interval-label">
+            Interval: <strong>{{ formattedInterval() }}</strong>
+          </span>
+          <mat-slider class="interval-slider" [min]="0.5" [max]="5" [step]="0.5" [discrete]="true">
+            <input
+              matSliderThumb
+              [value]="store.generatorOptions().intervalMs / 1000"
+              (valueChange)="store.updateGeneratorOptions({ intervalMs: $event * 1000 })"
+            />
+          </mat-slider>
+        </div>
 
-    <!-- Single-shot and auto-play buttons -->
-    <div class="generator-actions">
-      <button
-        mat-raised-button
-        class="random-btn"
-        (click)="store.generateSingleRandomNote()"
-        matTooltip="Generate one random note"
-      >
-        <mat-icon>casino</mat-icon>
-        Random Note
-      </button>
+        <!-- Single-shot and auto-play buttons -->
+        <div class="generator-actions">
+          <button
+            mat-raised-button
+            class="random-btn"
+            (click)="store.generateSingleRandomNote()"
+            matTooltip="Generate one random note"
+          >
+            <mat-icon>casino</mat-icon>
+            Random Note
+          </button>
 
-      @if (!store.generatorIsRunning()) {
-        <button
-          mat-raised-button
-          color="primary"
-          (click)="store.startGenerator()"
-          matTooltip="Start auto-generating notes at the set interval"
-        >
-          <mat-icon>play_arrow</mat-icon>
-          Auto Play
-        </button>
-      } @else {
-        <button mat-raised-button color="warn" (click)="store.stopGenerator()">
-          <mat-icon>stop</mat-icon>
-          Stop
-        </button>
-      }
-    </div>
-  </section>
+          @if (!store.generatorIsRunning()) {
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="store.startGenerator()"
+              matTooltip="Start auto-generating notes at the set interval"
+            >
+              <mat-icon>play_arrow</mat-icon>
+              Auto Play
+            </button>
+          } @else {
+            <button mat-raised-button color="warn" (click)="store.stopGenerator()">
+              <mat-icon>stop</mat-icon>
+              Stop
+            </button>
+          }
+        </div>
+      </section>
+    </mat-expansion-panel>
+  </mat-accordion>
 </div>

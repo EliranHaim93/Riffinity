@@ -4,6 +4,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -25,6 +26,7 @@ import { FretboardStore } from '../../../../core/store/fretboard.store';
     MatCardModule,
     MatCheckboxModule,
     MatDividerModule,
+    MatExpansionModule,
     MatIconModule,
     MatSliderModule,
     MatSlideToggleModule,

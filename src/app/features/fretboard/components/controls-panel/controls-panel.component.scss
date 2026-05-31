@@ -4,31 +4,78 @@
   gap: 0;
 }
 
+/* ── Shared section icon & title (used in .section-header and mat-panel-title) ── */
+.section-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  color: var(--mat-sys-primary);
+}
+
+.section-title {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--mat-sys-on-surface-variant);
+}
+
 .panel-section {
   padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 12px;
 
+  /* Remove top padding when .panel-section lives inside an expansion panel body */
+  mat-expansion-panel & {
+    padding-top: 0;
+  }
+
   .section-header {
     display: flex;
     align-items: center;
     gap: 8px;
   }
+}
 
-  .section-icon {
-    font-size: 18px;
-    width: 18px;
-    height: 18px;
-    color: var(--mat-sys-primary);
-  }
+/* ── Accordion wrapper — flush with the divider above it ──────── */
+::ng-deep .controls-panel {
+  mat-accordion .mat-expansion-panel {
+    background: transparent;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
 
-  .section-title {
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    color: var(--mat-sys-on-surface-variant);
+    /* Header: match the padding/height of other section headers */
+    .mat-expansion-panel-header {
+      padding: 0 16px;
+      height: 48px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--mat-sys-on-surface-variant);
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.04) !important;
+      }
+
+      .mat-expansion-panel-header-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--mat-sys-on-surface-variant);
+      }
+
+      .mat-expansion-indicator::after {
+        color: var(--mat-sys-on-surface-variant);
+      }
+    }
+
+    /* Body: remove Material's default padding; .panel-section provides its own */
+    .mat-expansion-panel-body {
+      padding: 0;
+    }
   }
 }
 
@@ -105,6 +152,10 @@
   button {
     flex: 1;
     font-size: 12px;
+
+    .mdc-button__label {
+      line-height: 1;
+    }
   }
 }
 

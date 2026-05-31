@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
@@ -13,7 +14,7 @@ interface TimerPreset {
 @Component({
   selector: 'app-timer-widget',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatButtonModule, MatIconModule, MatTooltipModule],
+  imports: [MatButtonModule, MatExpansionModule, MatIconModule, MatTooltipModule],
   templateUrl: './timer-widget.component.html',
   styleUrl: './timer-widget.component.scss',
 })
