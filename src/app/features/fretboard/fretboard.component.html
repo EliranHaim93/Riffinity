@@ -1,16 +1,6 @@
 <div class="fretboard-page" [class.solfege-mode]="store.noteNamingSystem() === 'solfege'">
-
-  <!-- ── Generated note overlay ───────────────────────────────── -->
-  @if (store.displayedGeneratedNoteName()) {
-    <div class="generated-note-banner">
-      <span class="generated-note-value">{{ store.displayedGeneratedNoteName() }}</span>
-      <span class="generated-note-subtitle">Find this note</span>
-    </div>
-  }
-
   <!-- ── Main layout ─────────────────────────────────────────── -->
   <div class="page-layout">
-
     <!-- Sidebar: controls + timer -->
     <aside class="sidebar">
       <mat-card class="sidebar-card">
@@ -22,7 +12,6 @@
 
     <!-- Center: fretboard -->
     <main class="fretboard-area">
-
       <!-- Status chips -->
       <div class="status-bar">
         @if (store.markedPositions().length > 0) {
@@ -50,7 +39,6 @@
       <!-- Fretboard scroll wrapper -->
       <div class="fretboard-scroll">
         <div class="fretboard-grid">
-
           <!-- ── Fret number header ──────────────────────────── -->
           <div class="grid-row header-row">
             <div class="cell-string-label"></div>
@@ -67,7 +55,11 @@
           </div>
 
           <!-- ── String rows ─────────────────────────────────── -->
-          @for (stringConfig of guitarStringConfigs; let stringIndex = $index; track stringConfig.stringNumber) {
+          @for (
+            stringConfig of guitarStringConfigs;
+            let stringIndex = $index;
+            track stringConfig.stringNumber
+          ) {
             <div class="grid-row string-row">
               <!-- String name -->
               <div class="cell-string-label">
@@ -92,7 +84,10 @@
               <div class="cell-nut"></div>
 
               <!-- Fretted cells (frets 1–N) -->
-              @for (position of fretboardPositions()[stringIndex].slice(1); track position.fretNumber) {
+              @for (
+                position of fretboardPositions()[stringIndex].slice(1);
+                track position.fretNumber
+              ) {
                 <app-fret-cell
                   [position]="position"
                   [isMarked]="isPositionMarked(position)"
@@ -124,15 +119,23 @@
               </div>
             }
           </div>
+        </div>
+        <!-- /fretboard-grid -->
+      </div>
+      <!-- /fretboard-scroll -->
 
-        </div><!-- /fretboard-grid -->
-      </div><!-- /fretboard-scroll -->
+      <!-- ── Generated note overlay ───────────────────────────────── -->
+      @if (store.displayedGeneratedNoteName()) {
+        <div class="generated-note-banner">
+          <span class="generated-note-value">{{ store.displayedGeneratedNoteName() }}</span>
+          <span class="generated-note-subtitle">Find this note</span>
+        </div>
+      }
 
       <!-- Tuning info -->
       <p class="tuning-label">
         Standard tuning – EADGBE &nbsp;|&nbsp; Click any position to play &amp; mark it
       </p>
-
     </main>
   </div>
 </div>
