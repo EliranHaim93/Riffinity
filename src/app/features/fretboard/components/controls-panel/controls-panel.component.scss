@@ -153,8 +153,8 @@
     flex: 1;
     font-size: 12px;
 
-    .mdc-button__label {
-      line-height: 1;
+    ::ng-deep .mdc-button__label {
+      line-height: 1 !important;
     }
   }
 }
