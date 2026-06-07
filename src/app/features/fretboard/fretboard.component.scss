@@ -50,13 +50,6 @@
   }
 }
 
-/* ─── Fretboard topbar (metronome row) ───────────────────────── */
-.fretboard-topbar {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 6px;
-}
-
 /* ─── Layout ─────────────────────────────────────────────────── */
 .page-layout {
   display: flex;
@@ -66,10 +59,15 @@
 
 /* ─── Sidebar ────────────────────────────────────────────────── */
 .sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   width: 280px;
   flex-shrink: 0;
-  position: sticky;
-  top: 16px;
+}
+
+.sidebar-metronome {
+  display: block;
 }
 
 .sidebar-card {
@@ -92,7 +90,7 @@
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
-  min-height: 32px;
+  min-height: 50px;
   align-items: center;
 }
 
