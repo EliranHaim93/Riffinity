@@ -50,6 +50,13 @@
   }
 }
 
+/* ─── Fretboard topbar (metronome row) ───────────────────────── */
+.fretboard-topbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 6px;
+}
+
 /* ─── Layout ─────────────────────────────────────────────────── */
 .page-layout {
   display: flex;

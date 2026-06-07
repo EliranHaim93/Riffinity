@@ -12,6 +12,11 @@
 
     <!-- Center: fretboard -->
     <main class="fretboard-area">
+      <!-- Metronome: top-right above the fretboard -->
+      <div class="fretboard-topbar">
+        <app-metronome />
+      </div>
+
       <!-- Status chips -->
       <div class="status-bar">
         @if (store.markedPositions().length > 0) {

@@ -1,0 +1,56 @@
+<div class="metronome-widget">
+
+  <!-- ── Beat dots ──────────────────────────────────────── -->
+  <div class="beat-track">
+    @for (b of beats; track b) {
+      <div
+        class="beat-dot"
+        [class.active]="currentBeat() === b"
+        [class.accent]="b === 0">
+      </div>
+    }
+  </div>
+
+  <!-- ── BPM control ─────────────────────────────────────── -->
+  <div class="bpm-row">
+    <button
+      mat-icon-button
+      class="adj-btn"
+      (click)="adjustBpm(-5)"
+      matTooltip="−5 BPM"
+      [disabled]="bpm() <= 20">
+      <mat-icon>remove</mat-icon>
+    </button>
+
+    <div class="bpm-display">
+      <input
+        type="number"
+        class="bpm-input"
+        [value]="bpm()"
+        min="20"
+        max="240"
+        (change)="onBpmInput($event)">
+      <span class="bpm-unit">BPM</span>
+    </div>
+
+    <button
+      mat-icon-button
+      class="adj-btn"
+      (click)="adjustBpm(5)"
+      matTooltip="+5 BPM"
+      [disabled]="bpm() >= 240">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+
+  <!-- ── Play / Stop ─────────────────────────────────────── -->
+  <button
+    mat-icon-button
+    class="play-btn"
+    [class.playing]="isPlaying()"
+    (click)="toggle()"
+    [matTooltip]="isPlaying() ? 'Stop metronome' : 'Start metronome'">
+    <mat-icon>{{ isPlaying() ? 'stop' : 'play_arrow' }}</mat-icon>
+  </button>
+
+</div>

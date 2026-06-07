@@ -23,6 +23,7 @@ import { FretboardService } from '../../core/services/fretboard.service';
 import { FretboardStore } from '../../core/store/fretboard.store';
 import { ControlsPanelComponent } from './components/controls-panel/controls-panel.component';
 import { FretCellComponent } from './components/fret-cell/fret-cell.component';
+import { MetronomeComponent } from './components/metronome/metronome.component';
 import { TimerWidgetComponent } from './components/timer-widget/timer-widget.component';
 
 @Component({
@@ -38,6 +39,7 @@ import { TimerWidgetComponent } from './components/timer-widget/timer-widget.com
     MatTooltipModule,
     FretCellComponent,
     ControlsPanelComponent,
+    MetronomeComponent,
     TimerWidgetComponent,
   ],
   templateUrl: './fretboard.component.html',
