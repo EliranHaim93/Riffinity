@@ -1,3 +1,5 @@
+@use '../../styles/mixins' as mix;
+
 .app-shell {
   display: flex;
   flex-direction: column;
@@ -13,8 +15,7 @@
   padding: 12px 24px;
   background: rgba(255, 255, 255, 0.03);
   border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  @include mix.backdrop-blur(12px);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -41,10 +42,7 @@
     font-family: 'Righteous', sans-serif;
     font-size: 22px;
     font-weight: 400;
-    background: linear-gradient(135deg, var(--riff-gold), var(--riff-amber));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    @include mix.gold-gradient-text;
     line-height: 1.1;
     letter-spacing: 0.5px;
   }

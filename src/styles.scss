@@ -32,6 +32,10 @@ html {
   /* Chrome — surfaces and borders */
   --riff-surface:   rgba(255, 255, 255, 0.04);
   --riff-border:    rgba(255, 255, 255, 0.08);
+
+  /* Motion */
+  --riff-transition-fast: 0.2s ease;
+  --riff-transition-slide: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ── Reset & base ────────────────────────────────────────────── */

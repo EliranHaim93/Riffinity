@@ -1,0 +1,29 @@
+// ── Shared SCSS mixins ─────────────────────────────────────────────────────
+
+/// Gold → amber gradient applied to text via background-clip.
+/// Used for any brand-accented headline or note value.
+@mixin gold-gradient-text {
+  background: linear-gradient(135deg, var(--riff-gold), var(--riff-amber));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/// Vendor-prefixed backdrop-filter with a single blur value.
+@mixin backdrop-blur($amount) {
+  backdrop-filter: blur($amount);
+  -webkit-backdrop-filter: blur($amount);
+}
+
+/// Centers content inside a flex container on both axes.
+@mixin center-flex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/// Uppercase label with configurable letter-spacing.
+@mixin uppercase-label($spacing: 0.5px) {
+  text-transform: uppercase;
+  letter-spacing: $spacing;
+}
