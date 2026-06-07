@@ -7,8 +7,8 @@
   width: 100%;
   box-sizing: border-box;
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--riff-surface);
+  border: 1px solid var(--riff-border);
   backdrop-filter: blur(8px);
 }
 
@@ -33,18 +33,18 @@
   &.accent {
     width: 10px;
     height: 10px;
-    border-color: rgba(255, 196, 79, 0.35);
+    border-color: rgba(var(--riff-gold-rgb), 0.35);
   }
 
   &.active {
-    background: #ffab40;
-    border-color: #ffd54f;
-    box-shadow: 0 0 8px rgba(255, 171, 64, 0.9);
+    background: var(--riff-amber);
+    border-color: var(--riff-gold);
+    box-shadow: 0 0 8px rgba(var(--riff-amber-rgb), 0.9);
     transform: scale(1.25);
 
     &.accent {
-      background: #ffd54f;
-      box-shadow: 0 0 12px rgba(255, 213, 79, 1);
+      background: var(--riff-gold);
+      box-shadow: 0 0 12px rgba(var(--riff-gold-rgb), 1);
     }
   }
 }
@@ -66,8 +66,8 @@
   justify-content: center;
 
   &:not([disabled]):hover {
-    color: #ffab40 !important;
-    background: rgba(255, 171, 64, 0.1) !important;
+    color: var(--riff-amber) !important;
+    background: rgba(var(--riff-amber-rgb), 0.1) !important;
   }
 
   mat-icon {
@@ -105,7 +105,7 @@
   }
 
   &:focus {
-    color: #ffab40;
+    color: var(--riff-amber);
   }
 }
 
@@ -126,8 +126,8 @@
   width: 34px !important;
   height: 34px !important;
   border-radius: 50% !important;
-  border: 1px solid rgba(255, 171, 64, 0.3) !important;
-  color: #ffab40 !important;
+  border: 1px solid rgba(var(--riff-amber-rgb), 0.3) !important;
+  color: var(--riff-amber) !important;
   transition:
     background 200ms ease,
     border-color 200ms ease,
@@ -144,18 +144,18 @@
   }
 
   &:hover {
-    background: rgba(255, 171, 64, 0.12) !important;
-    border-color: rgba(255, 171, 64, 0.6) !important;
-    box-shadow: 0 0 10px rgba(255, 171, 64, 0.25) !important;
+    background: rgba(var(--riff-amber-rgb), 0.12) !important;
+    border-color: rgba(var(--riff-amber-rgb), 0.6) !important;
+    box-shadow: 0 0 10px rgba(var(--riff-amber-rgb), 0.25) !important;
   }
 
   &.playing {
-    background: rgba(255, 171, 64, 0.15) !important;
-    border-color: #ffab40 !important;
-    box-shadow: 0 0 12px rgba(255, 171, 64, 0.4) !important;
+    background: rgba(var(--riff-amber-rgb), 0.15) !important;
+    border-color: var(--riff-amber) !important;
+    box-shadow: 0 0 12px rgba(var(--riff-amber-rgb), 0.4) !important;
 
     mat-icon {
-      color: #ffd54f !important;
+      color: var(--riff-gold) !important;
     }
   }
 }
