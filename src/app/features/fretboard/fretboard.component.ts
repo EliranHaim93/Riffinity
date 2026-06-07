@@ -4,6 +4,7 @@ import {
   computed,
   inject,
   OnInit,
+  signal,
 } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
@@ -52,6 +53,16 @@ export class FretboardComponent implements OnInit {
   readonly guitarStringConfigs = GUITAR_STRING_CONFIGS;
   readonly singleDotFrets = SINGLE_DOT_FRETS;
   readonly doubleDotFrets = DOUBLE_DOT_FRETS;
+
+  readonly sidebarOpen = signal(false);
+
+  toggleSidebar(): void {
+    this.sidebarOpen.update(v => !v);
+  }
+
+  closeSidebar(): void {
+    this.sidebarOpen.set(false);
+  }
 
   /** 2D array: [stringIndex][fretIndex] → FretPosition */
   readonly fretboardPositions = computed(() =>

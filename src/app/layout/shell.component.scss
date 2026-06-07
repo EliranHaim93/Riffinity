@@ -82,3 +82,34 @@
   padding: 20px 24px;
   overflow-y: auto;
 }
+
+/* ── All mobile: compact header ─────────────────────────────── */
+@media (max-width: 960px) {
+  .app-header {
+    padding: 6px 16px;
+
+    .brand-icon svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    .brand-name {
+      font-size: 17px;
+    }
+
+    .brand-tagline {
+      display: none;
+    }
+  }
+
+  .page-content {
+    padding: 8px 12px;
+  }
+}
+
+/* ── Landscape mobile: ultra-tight content padding ───────────── */
+@media (max-width: 960px) and (orientation: landscape) {
+  .page-content {
+    padding: 4px 8px;
+  }
+}
