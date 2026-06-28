@@ -1,3 +1,5 @@
+@use '../../../../../styles/mixins' as mix;
+
 .metronome-widget {
   display: flex;
   flex-direction: column;
@@ -26,8 +28,7 @@
 
 /* ── Beat dots ─────────────────────────────────────────── */
 .beat-track {
-  display: flex;
-  align-items: center;
+  @include mix.flex-row($align-items: center);
   gap: 5px;
 }
 
@@ -63,8 +64,7 @@
 
 /* ── BPM row ──────────────────────────────────────────── */
 .bpm-row {
-  display: flex;
-  align-items: center;
+  @include mix.flex-row($align-items: center);
   gap: 2px;
 }
 
@@ -73,9 +73,7 @@
   height: 28px !important;
   line-height: 28px !important;
   color: rgba(255, 255, 255, 0.55) !important;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  @include mix.flex-row(center, center);
 
   &:not([disabled]):hover {
     color: var(--riff-amber) !important;
@@ -91,9 +89,7 @@
 }
 
 .bpm-display {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  @include mix.flex-column($align-items: center);
   min-width: 44px;
 }
 
@@ -132,9 +128,8 @@
 
 /* ── Play / Stop ──────────────────────────────────────── */
 .play-btn {
+  @include mix.flex-row(center, center);
   display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
   width: 34px !important;
   height: 34px !important;
   border-radius: 50% !important;
@@ -146,9 +141,8 @@
     box-shadow 200ms ease !important;
 
   mat-icon {
+    @include mix.flex-row(center, center);
     display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
     font-size: 18px !important;
     width: 18px !important;
     height: 18px !important;

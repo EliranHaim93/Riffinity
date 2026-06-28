@@ -2,18 +2,14 @@
 
 /* ─── Page wrapper ──────────────────────────────────────────── */
 .fretboard-page {
-  display: flex;
-  flex-direction: column;
+  @include mix.flex-column();
   gap: 16px;
   min-height: 0;
 }
 
 /* ─── Generated note banner ──────────────────────────────────── */
 .generated-note-banner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  @include mix.flex-column(center, center);
   padding: 20px 32px;
   background: linear-gradient(135deg, rgba(var(--riff-gold-rgb), 0.12), rgba(255, 255, 255, 0.03));
   border: 1px solid rgba(var(--riff-gold-rgb), 0.25);
@@ -50,15 +46,13 @@
 
 /* ─── Layout ─────────────────────────────────────────────────── */
 .page-layout {
-  display: flex;
+  @include mix.flex-row(flex-start, flex-start);
   gap: 20px;
-  align-items: flex-start;
 }
 
 /* ─── Sidebar ────────────────────────────────────────────────── */
 .sidebar {
-  display: flex;
-  flex-direction: column;
+  @include mix.flex-column();
   gap: 10px;
   width: 280px;
   flex-shrink: 0;
@@ -66,6 +60,7 @@
 
 .sidebar-metronome {
   display: block;
+  width: 100%;
 }
 
 .sidebar-card {
@@ -79,17 +74,15 @@
 .fretboard-area {
   flex: 1;
   min-width: 0;
-  display: flex;
-  flex-direction: column;
+  @include mix.flex-column();
   gap: 12px;
 }
 
 .status-bar {
-  display: flex;
+  @include mix.flex-row($align-items: center);
   gap: 8px;
   flex-wrap: wrap;
   min-height: 50px;
-  align-items: center;
 }
 
 /* ─── Fretboard scroll container ─────────────────────────────── */
@@ -144,7 +137,7 @@
   .cell-string-label,
   .cell-open-label,
   .fret-number-label {
-    @include mix.center-flex;
+    @include mix.flex-row(center, center);
     background: rgba(0, 0, 0, 0.45);
     border-bottom: 1px solid rgba(255, 255, 255, 0.07);
   }
@@ -174,7 +167,7 @@
 /* ─── String rows ────────────────────────────────────────────── */
 .string-row {
   .cell-string-label {
-    @include mix.center-flex;
+    @include mix.flex-row(center, center);
     background: rgba(0, 0, 0, 0.35);
     border-right: 1px solid rgba(255, 255, 255, 0.05);
   }
@@ -202,7 +195,7 @@
 }
 
 .marker-cell {
-  @include mix.center-flex;
+  @include mix.flex-row(center, center);
   gap: 10px;
   background: rgba(0, 0, 0, 0.3);
 }
@@ -234,7 +227,6 @@
 
 /* ─── Responsive ─────────────────────────────────────────────── */
 @media (max-width: 960px) {
-
   /* Backdrop overlay */
   .sidebar-backdrop {
     display: block;
@@ -254,8 +246,7 @@
 
   /* Mobile hamburger toolbar — always above the portrait overlay */
   .mobile-toolbar {
-    display: flex;
-    align-items: center;
+    @include mix.flex-row($align-items: center);
     gap: 10px;
     padding: 6px 0 4px;
     position: relative;
@@ -267,9 +258,7 @@
   }
 
   .hamburger-btn {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    @include mix.flex-column(center);
     gap: 5px;
     width: 36px;
     height: 36px;
@@ -278,7 +267,9 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
     cursor: pointer;
-    transition: background var(--riff-transition-fast), border-color var(--riff-transition-fast);
+    transition:
+      background var(--riff-transition-fast),
+      border-color var(--riff-transition-fast);
 
     &:hover {
       background: rgba(255, 255, 255, 0.1);
@@ -308,11 +299,12 @@
 
   /* Sidebar close button */
   .sidebar-close-btn {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    width: 100%;
-    padding: 4px 0 8px;
+    @include mix.flex-row(center, center);
+    align-self: flex-end;
+    width: 32px;
+    height: 32px;
+    padding: 4px;
+    margin-bottom: 4px;
     background: transparent;
     border: none;
     cursor: pointer;
@@ -375,12 +367,10 @@
 /* ─── Portrait mobile: full-screen rotate overlay ────────────── */
 @media (max-width: 960px) and (orientation: portrait) {
   .rotate-hint {
-    display: flex;
+    @include mix.flex-row(center, center);
     position: fixed;
     inset: 0;
     z-index: 300;
-    align-items: center;
-    justify-content: center;
     background: rgba(10, 13, 20, 0.78);
     @include mix.backdrop-blur(16px);
     transition: opacity 0.35s ease;
@@ -391,9 +381,7 @@
     }
 
     .rotate-hint-inner {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      @include mix.flex-column($align-items: center);
       gap: 20px;
       padding: 48px 40px;
       text-align: center;
@@ -424,9 +412,18 @@
   }
 
   @keyframes phone-tip {
-    0%, 15%   { transform: rotate(0deg); }
-    45%, 65%  { transform: rotate(-90deg); }
-    85%, 100% { transform: rotate(0deg); }
+    0%,
+    15% {
+      transform: rotate(0deg);
+    }
+    45%,
+    65% {
+      transform: rotate(-90deg);
+    }
+    85%,
+    100% {
+      transform: rotate(0deg);
+    }
   }
 }
 
@@ -503,8 +500,12 @@
   .generated-note-banner {
     padding: 6px 20px;
 
-    .generated-note-value { font-size: 40px; }
-    .generated-note-subtitle { display: none; }
+    .generated-note-value {
+      font-size: 40px;
+    }
+    .generated-note-subtitle {
+      display: none;
+    }
   }
 
   /* Hide tuning label — saves a full text line */

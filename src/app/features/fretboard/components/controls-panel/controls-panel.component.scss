@@ -1,6 +1,7 @@
+@use '../../../../../styles/mixins' as mix;
+
 .controls-panel {
-  display: flex;
-  flex-direction: column;
+  @include mix.flex-column();
   gap: 0;
 }
 
@@ -22,8 +23,7 @@
 
 .panel-section {
   padding: 16px;
-  display: flex;
-  flex-direction: column;
+  @include mix.flex-column();
   gap: 12px;
 
   /* Remove top padding when .panel-section lives inside an expansion panel body */
@@ -32,8 +32,7 @@
   }
 
   .section-header {
-    display: flex;
-    align-items: center;
+    @include mix.flex-row($align-items: center);
     gap: 8px;
   }
 }
@@ -61,8 +60,7 @@
       }
 
       .mat-expansion-panel-header-title {
-        display: flex;
-        align-items: center;
+        @include mix.flex-row($align-items: center);
         gap: 8px;
         color: var(--mat-sys-on-surface-variant);
       }
@@ -91,14 +89,13 @@
 
 /* ── Per-note color legend ──────────────────────────────────── */
 .note-color-legend {
-  display: flex;
+  @include mix.flex-row();
   flex-wrap: wrap;
   gap: 6px;
   margin-top: 4px;
 
   .legend-item {
-    display: flex;
-    align-items: center;
+    @include mix.flex-row($align-items: center);
     gap: 4px;
     cursor: default;
   }
@@ -129,14 +126,12 @@
 
 /* ── Generator section ──────────────────────────────────────── */
 .generator-options {
-  display: flex;
-  flex-direction: column;
+  @include mix.flex-column();
   gap: 4px;
 }
 
 .interval-control {
-  display: flex;
-  flex-direction: column;
+  @include mix.flex-column();
   gap: 4px;
 
   .interval-label {
@@ -146,7 +141,7 @@
 }
 
 .generator-actions {
-  display: flex;
+  @include mix.flex-row();
   gap: 8px;
 
   button {
