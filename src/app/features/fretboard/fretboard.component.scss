@@ -299,8 +299,12 @@
 
   /* Sidebar close button */
   .sidebar-close-btn {
-    @include mix.flex-row(flex-end, center);
-    padding: 4px 0 8px;
+    @include mix.flex-row(center, center);
+    align-self: flex-end;
+    width: 32px;
+    height: 32px;
+    padding: 4px;
+    margin-bottom: 4px;
     background: transparent;
     border: none;
     cursor: pointer;

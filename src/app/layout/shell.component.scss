@@ -2,7 +2,7 @@
 
 .app-shell {
   @include mix.flex-column();
-  min-height: 100vh;
+  height: 100dvh;
   background: #0a0d14;
 }
 
