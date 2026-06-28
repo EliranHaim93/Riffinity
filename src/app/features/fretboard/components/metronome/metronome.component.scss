@@ -1,8 +1,7 @@
 .metronome-widget {
   display: flex;
-  align-items: center;
-  justify-content: space-around;
-  gap: 10px;
+  flex-direction: column;
+  gap: 8px;
   padding: 8px 14px;
   width: 100%;
   box-sizing: border-box;
@@ -10,6 +9,19 @@
   background: var(--riff-surface);
   border: 1px solid var(--riff-border);
   backdrop-filter: blur(8px);
+}
+
+.metronome-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 10px;
+  width: 100%;
+}
+
+.metronome-actions {
+  display: flex;
+  width: 100%;
 }
 
 /* ── Beat dots ─────────────────────────────────────────── */
@@ -157,5 +169,31 @@
     mat-icon {
       color: var(--riff-gold) !important;
     }
+  }
+}
+
+/* ── Tap tempo ────────────────────────────────────────── */
+.tap-btn {
+  width: 100%;
+  min-height: 28px !important;
+  padding: 0 10px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.4px !important;
+  text-transform: uppercase !important;
+  color: rgba(255, 255, 255, 0.65) !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+
+  mat-icon {
+    font-size: 15px !important;
+    width: 15px !important;
+    height: 15px !important;
+    margin-right: 4px;
+  }
+
+  &:hover {
+    color: var(--riff-amber) !important;
+    border-color: rgba(var(--riff-amber-rgb), 0.45) !important;
+    background: rgba(var(--riff-amber-rgb), 0.08) !important;
   }
 }

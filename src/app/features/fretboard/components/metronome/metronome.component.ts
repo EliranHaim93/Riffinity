@@ -19,8 +19,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
  *    update the `currentBeat` signal, driving the visual beat-dot highlight.
  *
  * ## BPM range
- * 20–240 BPM, adjustable via ±5 buttons or by typing directly into the input.
- * Changing BPM while playing resets `nextTickTime` to `audioCtx.currentTime`
+ * 20–240 BPM, adjustable via ±5 buttons, tap tempo, or by typing directly into
+ * the input. Changing BPM while playing resets `nextTickTime` to `audioCtx.currentTime`
  * so the new tempo takes effect on the very next beat without a gap or overlap.
  */
 @Component({
@@ -51,6 +51,12 @@ export class MetronomeComponent implements OnDestroy {
   /** Handle for the 25 ms polling interval; null when stopped. */
   private schedulerTimer: ReturnType<typeof setInterval> | null = null;
 
+  /** Wall-clock timestamps from recent tap-tempo clicks. */
+  private tapTimestamps: number[] = [];
+
+  private static readonly TAP_RESET_MS = 2000;
+  private static readonly MAX_TAP_SAMPLES = 4;
+
   // ── Public API ────────────────────────────────────────────────
   toggle(): void {
     this.isPlaying() ? this.stop() : this.start();
@@ -64,11 +70,35 @@ export class MetronomeComponent implements OnDestroy {
    * @param delta Positive to increase, negative to decrease (typically ±5).
    */
   adjustBpm(delta: number): void {
-    const next = Math.min(240, Math.max(20, this.bpm() + delta));
-    this.bpm.set(next);
-    if (this.isPlaying()) {
-      this.nextTickTime = this.audioCtx!.currentTime;
+    this.applyBpm(this.bpm() + delta);
+  }
+
+  /**
+   * Records a tap and derives BPM from the average interval between recent taps.
+   * Tap history resets after 2 s of inactivity or when fewer than two taps exist.
+   */
+  tapTempo(): void {
+    const now = performance.now();
+    const lastTap = this.tapTimestamps.at(-1);
+
+    if (lastTap !== undefined && now - lastTap > MetronomeComponent.TAP_RESET_MS) {
+      this.tapTimestamps = [];
     }
+
+    this.tapTimestamps.push(now);
+
+    if (this.tapTimestamps.length > MetronomeComponent.MAX_TAP_SAMPLES + 1) {
+      this.tapTimestamps.shift();
+    }
+
+    if (this.tapTimestamps.length < 2) return;
+
+    let totalInterval = 0;
+    for (let i = 1; i < this.tapTimestamps.length; i++) {
+      totalInterval += this.tapTimestamps[i] - this.tapTimestamps[i - 1];
+    }
+
+    this.applyBpm(Math.round(60000 / (totalInterval / (this.tapTimestamps.length - 1))));
   }
 
   /**
@@ -81,12 +111,10 @@ export class MetronomeComponent implements OnDestroy {
   onBpmInput(event: Event): void {
     const input = event.target as HTMLInputElement;
     const raw = +input.value;
-    const clamped = Number.isFinite(raw) && raw !== 0 ? Math.min(240, Math.max(20, raw)) : this.bpm();
-    this.bpm.set(clamped);
+    const clamped =
+      Number.isFinite(raw) && raw !== 0 ? Math.min(240, Math.max(20, raw)) : this.bpm();
+    this.applyBpm(clamped);
     input.value = clamped.toString();
-    if (this.isPlaying()) {
-      this.nextTickTime = this.audioCtx!.currentTime;
-    }
   }
 
   // ── Lifecycle ─────────────────────────────────────────────────
@@ -98,6 +126,14 @@ export class MetronomeComponent implements OnDestroy {
   }
 
   // ── Private helpers ───────────────────────────────────────────
+
+  /** Clamps BPM to [20, 240] and resets the scheduler cursor when playing. */
+  private applyBpm(raw: number): void {
+    this.bpm.set(Math.min(240, Math.max(20, raw)));
+    if (this.isPlaying()) {
+      this.nextTickTime = this.audioCtx!.currentTime;
+    }
+  }
 
   /**
    * Creates (or resumes) the AudioContext, resets beat state, and launches
