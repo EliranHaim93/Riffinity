@@ -1,22 +1,26 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { AudioService } from '../../../../core/services/audio.service';
 
 /**
  * Standalone metronome widget rendered above the fretboard.
  *
  * ## Architecture
- * Uses a lookahead scheduler to keep audio timing accurate:
+ * Uses a lookahead scheduler on the shared Tone.js AudioContext so clicks stay
+ * locked to the same clock as fretboard notes:
  *
- * 1. A `setInterval` fires every 25 ms.
- * 2. Each tick of the interval calls `schedule()`, which looks 100 ms ahead
- *    into the `AudioContext` timeline and pre-queues any beats that fall
- *    within that window.
- * 3. Each beat is rendered as a short sine-wave burst via the Web Audio API
- *    so that audio timing is sample-accurate and immune to JS event-loop jitter.
- * 4. A matching `setTimeout` fires at roughly the same wall-clock moment to
- *    update the `currentBeat` signal, driving the visual beat-dot highlight.
+ * 1. A self-rescheduling timer fires every ~25 ms.
+ * 2. Each tick calls `schedule()`, which looks 250 ms ahead into the
+ *    AudioContext timeline and pre-queues beats in that window.
+ * 3. Each beat is a short sine-wave burst scheduled sample-accurately.
+ * 4. A `requestAnimationFrame` loop reads the same AudioContext clock for
+ *    beat-dot visuals instead of per-beat `setTimeout` callbacks.
+ * 5. If the main thread falls behind by more than half a beat, missed beats
+ *    are skipped rather than bunched into a burst of late clicks.
+ * 6. `visibilitychange` and `statechange` listeners resume the context and
+ *    re-schedule when the tab or AudioContext was suspended.
  *
  * ## BPM range
  * 20–240 BPM, adjustable via ±5 buttons, tap tempo, or by typing directly into
@@ -31,35 +35,76 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   styleUrl: './metronome.component.scss',
 })
 export class MetronomeComponent implements OnDestroy {
+  private readonly audioService = inject(AudioService);
+
   readonly bpm = signal(120); // Clamped to [20, 240]
   readonly isPlaying = signal(false); // Whether the metronome is currently ticking.
   readonly currentBeat = signal(-1); // Index of the beat that should currently be highlighted (0–3). Set to -1 when stopped so no dot appears active.
   readonly beats = [0, 1, 2, 3]; // Beat indices used by the template's `@for` loop.
 
-  /** Lazily created; stays alive for the component's lifetime once opened. */
+  /** Shared Tone.js AudioContext; owned by {@link AudioService}, not closed here. */
   private audioCtx: AudioContext | null = null;
 
-  /**
-   * Absolute `AudioContext` timestamp (in seconds) at which the next beat
-   * should be scheduled. Advanced by one beat duration after each queued tick.
-   */
+  /** Absolute AudioContext timestamp (seconds) for the next beat to schedule. */
   private nextTickTime = 0;
 
-  /** Cycles through `beats` indices (0 → 1 → 2 → 3 → 0 → …). */
+  /** Index of the next beat to schedule (0–3). */
   private beatIndex = 0;
 
-  /** Handle for the 25 ms polling interval; null when stopped. */
-  private schedulerTimer: ReturnType<typeof setInterval> | null = null;
+  /** AudioContext time and beat index of the most recently queued click. */
+  private lastBeatTime = 0;
+  private lastBeatIndex = -1;
+
+  /** Self-rescheduling timeout that drives the lookahead scheduler. */
+  private schedulerTimer: ReturnType<typeof setTimeout> | null = null;
+
+  /** rAF handle for syncing beat-dot visuals to the audio clock. */
+  private visualFrameId: number | null = null;
 
   /** Wall-clock timestamps from recent tap-tempo clicks. */
   private tapTimestamps: number[] = [];
 
+  /** Tap history resets when the gap between taps exceeds this value. */
   private static readonly TAP_RESET_MS = 2000;
+
+  /** Maximum number of tap intervals averaged when deriving BPM. */
   private static readonly MAX_TAP_SAMPLES = 4;
 
+  /** How often `schedule()` polls for beats to queue (ms). */
+  private static readonly SCHEDULE_INTERVAL_MS = 25;
+
+  /** How far ahead of `audioCtx.currentTime` beats are pre-scheduled (s). */
+  private static readonly SCHEDULE_AHEAD_S = 0.25;
+
+  /** Skip missed beats when lateness exceeds this fraction of a beat. */
+  private static readonly LATE_SKIP_THRESHOLD = 0.5;
+
+  /** Resumes audio and re-schedules when the tab becomes visible again. */
+  private readonly onVisibilityChange = (): void => {
+    if (document.visibilityState !== 'visible' || !this.isPlaying()) return;
+    void this.audioCtx?.resume().then(() => this.schedule());
+  };
+
+  /** Attempts to resume the AudioContext when the browser suspends it mid-playback. */
+  private readonly onAudioStateChange = (): void => {
+    if (this.audioCtx?.state === 'suspended' && this.isPlaying()) {
+      void this.audioCtx.resume();
+    }
+  };
+
+  /** Drives `syncVisualBeat()` on every animation frame while playing. */
+  private readonly runVisualLoop = (): void => {
+    this.syncVisualBeat();
+    if (this.isPlaying()) {
+      this.visualFrameId = requestAnimationFrame(this.runVisualLoop);
+    }
+  };
+
   // ── Public API ────────────────────────────────────────────────
+
+  /** Starts or stops the metronome. */
   toggle(): void {
-    this.isPlaying() ? this.stop() : this.start();
+    this.isPlaying() ? this.stop() : void this.start();
   }
 
   /**
@@ -75,7 +120,8 @@ export class MetronomeComponent implements OnDestroy {
 
   /**
    * Records a tap and derives BPM from the average interval between recent taps.
-   * Tap history resets after 2 s of inactivity or when fewer than two taps exist.
+   * Requires at least two taps; history resets after 2 s of inactivity and only
+   * the last four intervals are averaged.
    */
   tapTempo(): void {
     const now = performance.now();
@@ -119,72 +165,121 @@ export class MetronomeComponent implements OnDestroy {
 
   // ── Lifecycle ─────────────────────────────────────────────────
 
-  /** Stops the scheduler and closes the AudioContext to release resources. */
+  /** Stops the scheduler and removes document/context listeners. */
   ngOnDestroy(): void {
     this.stop();
-    this.audioCtx?.close();
+    this.detachListeners();
   }
 
   // ── Private helpers ───────────────────────────────────────────
 
-  /** Clamps BPM to [20, 240] and resets the scheduler cursor when playing. */
+  /** Clamps BPM to [20, 240] and resets the beat cursor when playing. */
   private applyBpm(raw: number): void {
     this.bpm.set(Math.min(240, Math.max(20, raw)));
-    if (this.isPlaying()) {
-      this.nextTickTime = this.audioCtx!.currentTime;
+    if (this.isPlaying() && this.audioCtx) {
+      this.resetBeatCursor(this.audioCtx.currentTime);
     }
   }
 
   /**
-   * Creates (or resumes) the AudioContext, resets beat state, and launches
-   * the 25 ms scheduler interval.
+   * Acquires the shared AudioContext, resets beat state, and starts the
+   * scheduler loop plus the visual sync rAF chain.
    */
-  private start(): void {
-    if (!this.audioCtx) {
-      this.audioCtx = new AudioContext();
-    } else if (this.audioCtx.state === 'suspended') {
-      this.audioCtx.resume();
-    }
-    this.beatIndex = 0;
-    this.nextTickTime = this.audioCtx.currentTime;
+  private async start(): Promise<void> {
+    this.audioCtx = await this.audioService.ensureRunningContext();
+    this.attachListeners();
+
+    this.resetBeatCursor(this.audioCtx.currentTime);
     this.isPlaying.set(true);
-    this.schedulerTimer = setInterval(() => this.schedule(), 25);
+    this.schedule();
+    this.schedulerTimer = setTimeout(
+      () => this.scheduleLoop(),
+      MetronomeComponent.SCHEDULE_INTERVAL_MS,
+    );
+    this.visualFrameId = requestAnimationFrame(this.runVisualLoop);
   }
 
-  /**
-   * Clears the scheduler interval and resets visual state.
-   * The AudioContext is left open so it can be resumed cheaply on next start.
-   */
+  /** Clears timers, resets visual state, and detaches event listeners. */
   private stop(): void {
     this.isPlaying.set(false);
     this.currentBeat.set(-1);
+    this.lastBeatIndex = -1;
+    this.detachListeners();
+
     if (this.schedulerTimer !== null) {
-      clearInterval(this.schedulerTimer);
+      clearTimeout(this.schedulerTimer);
       this.schedulerTimer = null;
+    }
+
+    if (this.visualFrameId !== null) {
+      cancelAnimationFrame(this.visualFrameId);
+      this.visualFrameId = null;
     }
   }
 
+  /** Aligns the scheduler and visual cursors to `currentTime`, starting on beat 0. */
+  private resetBeatCursor(currentTime: number): void {
+    this.beatIndex = 0;
+    this.nextTickTime = currentTime;
+    this.lastBeatTime = 0;
+    this.lastBeatIndex = -1;
+  }
+
+  /** Repeatedly calls `schedule()` while the metronome is playing. */
+  private scheduleLoop(): void {
+    this.schedule();
+    if (!this.isPlaying()) return;
+    this.schedulerTimer = setTimeout(
+      () => this.scheduleLoop(),
+      MetronomeComponent.SCHEDULE_INTERVAL_MS,
+    );
+  }
+
   /**
-   * Lookahead scheduler — called every 25 ms while playing.
-   *
-   * Queues all beats whose scheduled time falls within the next 100 ms
-   * (`lookAhead`) of the AudioContext clock. Pre-scheduling into the future
-   * decouples audio accuracy from JS timer precision.
+   * Lookahead scheduler — pre-queues beats within 250 ms of the AudioContext
+   * clock. Skips beats that are more than half a beat late to avoid burst
+   * clicks after main-thread lag.
    */
   private schedule(): void {
     if (!this.audioCtx) return;
+
+    if (this.audioCtx.state === 'suspended') {
+      void this.audioCtx.resume();
+      return;
+    }
+
+    const currentTime = this.audioCtx.currentTime;
     const secondsPerBeat = 60 / this.bpm();
-    const lookAhead = 0.1;
+    const lookAhead = MetronomeComponent.SCHEDULE_AHEAD_S;
 
-    while (this.nextTickTime < this.audioCtx.currentTime + lookAhead) {
+    while (this.nextTickTime < currentTime + lookAhead) {
+      const lateness = currentTime - this.nextTickTime;
+
+      if (lateness > secondsPerBeat * MetronomeComponent.LATE_SKIP_THRESHOLD) {
+        const skip = Math.floor(lateness / secondsPerBeat) + 1;
+        this.beatIndex = (this.beatIndex + skip) % this.beats.length;
+        this.nextTickTime += skip * secondsPerBeat;
+        continue;
+      }
+
       this.playClick(this.nextTickTime, this.beatIndex === 0);
-
-      const beat = this.beatIndex;
-      const delay = Math.max(0, (this.nextTickTime - this.audioCtx.currentTime) * 1000);
-      setTimeout(() => this.currentBeat.set(beat), delay);
+      this.lastBeatTime = this.nextTickTime;
+      this.lastBeatIndex = this.beatIndex;
 
       this.nextTickTime += secondsPerBeat;
       this.beatIndex = (this.beatIndex + 1) % this.beats.length;
+    }
+  }
+
+  /** Highlights the beat dot whose scheduled window contains `audioCtx.currentTime`. */
+  private syncVisualBeat(): void {
+    if (!this.audioCtx || !this.isPlaying() || this.lastBeatIndex < 0) return;
+
+    const secondsPerBeat = 60 / this.bpm();
+    const t = this.audioCtx.currentTime;
+
+    if (t >= this.lastBeatTime && t < this.lastBeatTime + secondsPerBeat) {
+      this.currentBeat.set(this.lastBeatIndex);
     }
   }
 
@@ -198,6 +293,7 @@ export class MetronomeComponent implements OnDestroy {
    */
   private playClick(time: number, accent: boolean): void {
     if (!this.audioCtx) return;
+
     const osc = this.audioCtx.createOscillator();
     const gain = this.audioCtx.createGain();
     osc.connect(gain);
@@ -208,5 +304,17 @@ export class MetronomeComponent implements OnDestroy {
     gain.gain.exponentialRampToValueAtTime(0.001, time + 0.04);
     osc.start(time);
     osc.stop(time + 0.05);
+  }
+
+  /** Registers tab-visibility and AudioContext state listeners. */
+  private attachListeners(): void {
+    document.addEventListener('visibilitychange', this.onVisibilityChange);
+    this.audioCtx?.addEventListener('statechange', this.onAudioStateChange);
+  }
+
+  /** Removes tab-visibility and AudioContext state listeners. */
+  private detachListeners(): void {
+    document.removeEventListener('visibilitychange', this.onVisibilityChange);
+    this.audioCtx?.removeEventListener('statechange', this.onAudioStateChange);
   }
 }
