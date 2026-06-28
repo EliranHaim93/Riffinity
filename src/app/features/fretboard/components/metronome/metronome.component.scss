@@ -1,7 +1,8 @@
 @use '../../../../../styles/mixins' as mix;
 
 .metronome-widget {
-  @include mix.flex-column();
+  display: flex;
+  flex-direction: column;
   gap: 8px;
   padding: 8px 14px;
   width: 100%;
@@ -13,13 +14,15 @@
 }
 
 .metronome-main {
-  @include mix.flex-row(space-around, center);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
   gap: 10px;
   width: 100%;
 }
 
 .metronome-actions {
-  @include mix.flex-row();
+  display: flex;
   width: 100%;
 }
 
