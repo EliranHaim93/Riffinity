@@ -1,17 +1,14 @@
 @use '../../styles/mixins' as mix;
 
 .app-shell {
-  display: flex;
-  flex-direction: column;
+  @include mix.flex-column();
   min-height: 100vh;
   background: #0a0d14;
 }
 
 /* ── Header ─────────────────────────────────────────────────── */
 .app-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  @include mix.flex-row(space-between, center);
   padding: 12px 24px;
   background: rgba(255, 255, 255, 0.03);
   border-bottom: 1px solid rgba(255, 255, 255, 0.07);
@@ -22,19 +19,16 @@
 }
 
 .header-brand {
-  display: flex;
-  align-items: center;
+  @include mix.flex-row($align-items: center);
   gap: 12px;
 
   .brand-icon {
-    display: flex;
-    align-items: center;
+    @include mix.flex-row($align-items: center);
     filter: drop-shadow(0 2px 8px rgba(240, 168, 64, 0.4));
   }
 
   .brand-text {
-    display: flex;
-    flex-direction: column;
+    @include mix.flex-column();
     gap: 0;
   }
 
@@ -55,8 +49,7 @@
 }
 
 .header-nav {
-  display: flex;
-  align-items: center;
+  @include mix.flex-row($align-items: center);
   gap: 12px;
 
   .nav-badge {

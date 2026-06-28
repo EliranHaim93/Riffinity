@@ -1,3 +1,5 @@
+@use '../../../../../styles/mixins' as mix;
+
 /* ── Accordion: strip Material defaults to match card design ─── */
 ::ng-deep app-timer-widget {
   mat-accordion .mat-expansion-panel {
@@ -20,8 +22,7 @@
       }
 
       .mat-expansion-panel-header-title {
-        display: flex;
-        align-items: center;
+        @include mix.flex-row($align-items: center);
         gap: 8px;
         color: var(--mat-sys-on-surface-variant);
       }
@@ -39,9 +40,7 @@
 
 /* ── Timer body ─────────────────────────────────────────────── */
 .timer-widget {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  @include mix.flex-column($align-items: center);
   gap: 12px;
   padding: 16px;
 }
@@ -67,10 +66,7 @@
   .time-text {
     position: absolute;
     inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    @include mix.flex-column(center, center);
     gap: 2px;
   }
 
@@ -97,10 +93,9 @@
 
 /* ── Duration presets ───────────────────────────────────────── */
 .duration-presets {
-  display: flex;
+  @include mix.flex-row(center);
   flex-wrap: wrap;
   gap: 6px;
-  justify-content: center;
 
   .preset-btn {
     font-size: 12px;
@@ -119,8 +114,7 @@
 
 /* ── Controls ───────────────────────────────────────────────── */
 .timer-controls {
-  display: flex;
-  align-items: center;
+  @include mix.flex-row($align-items: center);
   gap: 8px;
 
   .control-btn {
