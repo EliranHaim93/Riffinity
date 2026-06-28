@@ -1,8 +1,11 @@
 import { Injectable } from '@angular/core';
 
 /**
- * Wraps Tone.js PluckSynth (Karplus–Strong algorithm) for guitar-like
- * pluck sounds. Audio context is started lazily on the first user gesture.
+ * Central audio service for the fretboard app.
+ *
+ * Owns a single Tone.js {@link AudioContext} shared by fretboard note playback
+ * and the metronome so all sounds stay on the same hardware clock. The context
+ * and PluckSynth are started lazily on the first user gesture.
  */
 @Injectable({ providedIn: 'root' })
 export class AudioService {
@@ -10,6 +13,11 @@ export class AudioService {
   private reverbNode: unknown = null;
   private audioContextStarted = false;
 
+  /**
+   * Plays a note at the given frequency using the Karplus–Strong pluck synth.
+   *
+   * @param frequencyHz Pitch in hertz (e.g. from a fret position).
+   */
   async playFrequencyHz(frequencyHz: number): Promise<void> {
     await this.ensureAudioStarted();
     const synth = this.pluckSynth as { triggerAttack: (freq: number, time?: unknown) => void };
@@ -18,6 +26,21 @@ export class AudioService {
     synth.triggerAttack(frequencyHz, Tone.now());
   }
 
+  /**
+   * Returns the shared Tone.js `AudioContext`, starting and resuming it if
+   * needed. Used by the metronome to schedule clicks on the same clock as
+   * fretboard notes.
+   */
+  async ensureRunningContext(): Promise<AudioContext> {
+    await this.ensureAudioStarted();
+    const Tone = await import('tone');
+    if (Tone.getContext().state !== 'running') {
+      await Tone.start();
+    }
+    return Tone.getContext().rawContext as AudioContext;
+  }
+
+  /** Initialises Tone.js, the reverb chain, and the pluck synth on first use. */
   private async ensureAudioStarted(): Promise<void> {
     if (this.audioContextStarted) return;
 
