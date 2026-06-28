@@ -22,6 +22,7 @@ import {
 } from '../../core/models/note.model';
 import { FretboardService } from '../../core/services/fretboard.service';
 import { FretboardStore } from '../../core/store/fretboard.store';
+import { BrandComponent } from '../../layout/brand/brand.component';
 import { ControlsPanelComponent } from './components/controls-panel/controls-panel.component';
 import { FretCellComponent } from './components/fret-cell/fret-cell.component';
 import { MetronomeComponent } from './components/metronome/metronome.component';
@@ -38,6 +39,7 @@ import { TimerWidgetComponent } from './components/timer-widget/timer-widget.com
     MatDividerModule,
     MatIconModule,
     MatTooltipModule,
+    BrandComponent,
     FretCellComponent,
     ControlsPanelComponent,
     MetronomeComponent,
@@ -57,7 +59,7 @@ export class FretboardComponent implements OnInit {
   readonly sidebarOpen = signal(false);
 
   toggleSidebar(): void {
-    this.sidebarOpen.update(v => !v);
+    this.sidebarOpen.update((v) => !v);
   }
 
   closeSidebar(): void {
@@ -79,16 +81,11 @@ export class FretboardComponent implements OnInit {
   }
 
   isPositionMarked(position: FretPosition): boolean {
-    return this.store.markedPositionKeySet().has(
-      this.fretboardService.buildPositionKey(position),
-    );
+    return this.store.markedPositionKeySet().has(this.fretboardService.buildPositionKey(position));
   }
 
   isGeneratedPosition(position: FretPosition): boolean {
-    return this.fretboardService.isSamePosition(
-      position,
-      this.store.currentGeneratedPosition(),
-    );
+    return this.fretboardService.isSamePosition(position, this.store.currentGeneratedPosition());
   }
 
   onPositionClicked(position: FretPosition): void {

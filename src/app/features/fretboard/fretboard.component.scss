@@ -33,6 +33,23 @@
   }
 }
 
+/* Status-bar variant of the generated note — desktop uses the banner above.
+   Themed to match the desktop banner's gold gradient colour scheme. */
+.generated-note-chip.mat-mdc-chip.mat-mdc-standard-chip {
+  display: none;
+
+  --mdc-chip-elevated-container-color: transparent;
+  --mdc-chip-label-text-color: var(--riff-gold);
+  --mdc-chip-with-icon-icon-color: var(--riff-gold);
+
+  background: linear-gradient(135deg, rgba(var(--riff-gold-rgb), 0.12), rgba(255, 255, 255, 0.03));
+  border: 1px solid rgba(var(--riff-gold-rgb), 0.25);
+
+  .mat-mdc-chip-avatar {
+    color: var(--riff-gold);
+  }
+}
+
 @keyframes banner-in {
   from {
     opacity: 0;
@@ -219,7 +236,7 @@
 
 /* ─── Mobile-only elements (hidden on desktop) ───────────────── */
 .mobile-toolbar,
-.sidebar-close-btn,
+.sidebar-header,
 .sidebar-backdrop,
 .rotate-hint {
   display: none;
@@ -290,21 +307,27 @@
     }
   }
 
-  .mobile-toolbar-label {
-    font-size: 12px;
-    font-weight: 500;
-    color: rgba(255, 255, 255, 0.4);
-    @include mix.uppercase-label(0.5px);
+  /* Sidebar header: holds the (relocated) brand and the close button.
+     Brand on the left, close button on the right — the space-between
+     keeps the brand clear of the X button. */
+  .sidebar-header {
+    @include mix.flex-row(space-between, center);
+    margin-bottom: 8px;
+  }
+
+  .sidebar-brand {
+    display: block;
+    min-width: 0;
+    flex: 1 1 auto;
   }
 
   /* Sidebar close button */
   .sidebar-close-btn {
     @include mix.flex-row(center, center);
-    align-self: flex-end;
+    flex-shrink: 0;
     width: 32px;
     height: 32px;
     padding: 4px;
-    margin-bottom: 4px;
     background: transparent;
     border: none;
     cursor: pointer;
@@ -361,6 +384,17 @@
   .fretboard-area {
     width: 100%;
     min-width: 0;
+  }
+
+  /* The full-size note banner is replaced on mobile by a status-bar chip. */
+  .generated-note-banner {
+    display: none;
+  }
+
+  /* Reveal the generated-note chip in the status bar (hidden on desktop). */
+  .generated-note-chip.mat-mdc-chip.mat-mdc-standard-chip {
+    display: inline-flex;
+    margin-inline: 40px auto;
   }
 }
 
@@ -438,18 +472,15 @@
   .mobile-toolbar {
     padding: 4px 0;
     align-items: center;
+    width: fit-content;
   }
 
   .hamburger-btn {
-    width: 28px;
-    height: 28px;
+    width: 30px;
+    height: 30px;
     gap: 3px;
     padding: 4px;
     border-radius: 6px;
-  }
-
-  .mobile-toolbar-label {
-    font-size: 11px;
   }
 
   /* Status bar: lift out of flow → float top-right over fretboard */
@@ -463,8 +494,9 @@
     top: 4px;
     right: 0;
     min-height: unset;
-    width: auto;
+    width: 100%;
     flex-wrap: nowrap;
+    justify-content: flex-end;
     gap: 4px;
     z-index: 10;
     pointer-events: none;
@@ -479,6 +511,7 @@
   /* Fretboard: fill viewport width — no horizontal scroll */
   .fretboard-scroll {
     overflow-x: hidden;
+    margin-top: 5px;
   }
 
   .fretboard-grid {
@@ -494,18 +527,6 @@
   .sidebar {
     overflow-y: auto;
     padding-bottom: 32px;
-  }
-
-  /* Compact generated note banner */
-  .generated-note-banner {
-    padding: 6px 20px;
-
-    .generated-note-value {
-      font-size: 40px;
-    }
-    .generated-note-subtitle {
-      display: none;
-    }
   }
 
   /* Hide tuning label — saves a full text line */

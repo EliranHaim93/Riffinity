@@ -1,0 +1,49 @@
+@use '../../styles/mixins' as mix;
+
+.header-brand {
+  @include mix.flex-row($align-items: center);
+  gap: 12px;
+
+  .brand-icon {
+    @include mix.flex-row($align-items: center);
+    filter: drop-shadow(0 2px 8px rgba(240, 168, 64, 0.4));
+  }
+
+  .brand-text {
+    @include mix.flex-column();
+    gap: 0;
+  }
+
+  .brand-name {
+    font-family: 'Righteous', sans-serif;
+    font-size: 22px;
+    font-weight: 400;
+    @include mix.gold-gradient-text;
+    line-height: 1.1;
+    letter-spacing: 0.5px;
+  }
+
+  .brand-tagline {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.4);
+    letter-spacing: 0.5px;
+  }
+}
+
+/* Compact brand below 960px (matches former shell behaviour) */
+@media (max-width: 960px) {
+  .header-brand {
+    .brand-icon svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    .brand-name {
+      font-size: 17px;
+    }
+
+    .brand-tagline {
+      display: none;
+    }
+  }
+}

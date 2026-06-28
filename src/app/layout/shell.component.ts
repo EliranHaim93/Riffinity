@@ -3,11 +3,12 @@ import { RouterOutlet } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { BrandComponent } from './brand/brand.component';
 
 @Component({
   selector: 'app-shell',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterOutlet, MatIconModule, MatButtonModule, MatTooltipModule],
+  imports: [RouterOutlet, MatIconModule, MatButtonModule, MatTooltipModule, BrandComponent],
   templateUrl: './shell.component.html',
   styleUrl: './shell.component.scss',
 })

@@ -42,10 +42,14 @@
   <div class="page-layout">
     <!-- Sidebar: metronome + controls + timer -->
     <aside class="sidebar" [class.sidebar-open]="sidebarOpen()">
-      <!-- Mobile close button -->
-      <button class="sidebar-close-btn" (click)="closeSidebar()" aria-label="Close menu">
-        <mat-icon>close</mat-icon>
-      </button>
+      <!-- Mobile sidebar header: relocated app brand + close button -->
+      <div class="sidebar-header">
+        <app-brand class="sidebar-brand" />
+
+        <button class="sidebar-close-btn" (click)="closeSidebar()" aria-label="Close menu">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
 
       <app-metronome class="sidebar-metronome" />
       <mat-card class="sidebar-card">
@@ -64,11 +68,17 @@
           <span class="hamburger-bar"></span>
           <span class="hamburger-bar"></span>
         </button>
-        <span class="mobile-toolbar-label">Controls</span>
       </div>
 
       <!-- Status chips -->
       <div class="status-bar">
+        <!-- Generated note (mobile only — desktop shows the large banner) -->
+        @if (store.displayedGeneratedNoteName()) {
+          <mat-chip class="generated-note-chip">
+            <mat-icon matChipAvatar>music_note</mat-icon>
+            Find {{ store.displayedGeneratedNoteName() }}
+          </mat-chip>
+        }
         @if (store.markedPositions().length > 0) {
           <mat-chip-set>
             <mat-chip highlighted color="primary">

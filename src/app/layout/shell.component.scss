@@ -18,36 +18,6 @@
   z-index: 100;
 }
 
-.header-brand {
-  @include mix.flex-row($align-items: center);
-  gap: 12px;
-
-  .brand-icon {
-    @include mix.flex-row($align-items: center);
-    filter: drop-shadow(0 2px 8px rgba(240, 168, 64, 0.4));
-  }
-
-  .brand-text {
-    @include mix.flex-column();
-    gap: 0;
-  }
-
-  .brand-name {
-    font-family: 'Righteous', sans-serif;
-    font-size: 22px;
-    font-weight: 400;
-    @include mix.gold-gradient-text;
-    line-height: 1.1;
-    letter-spacing: 0.5px;
-  }
-
-  .brand-tagline {
-    font-size: 11px;
-    color: rgba(255, 255, 255, 0.4);
-    letter-spacing: 0.5px;
-  }
-}
-
 .header-nav {
   @include mix.flex-row($align-items: center);
   gap: 12px;
@@ -74,23 +44,10 @@
   overflow-y: auto;
 }
 
-/* ── All mobile: compact header ─────────────────────────────── */
+/* ── < 960px: header is relocated into the fretboard sidebar ── */
 @media (max-width: 960px) {
   .app-header {
-    padding: 6px 16px;
-
-    .brand-icon svg {
-      width: 28px;
-      height: 28px;
-    }
-
-    .brand-name {
-      font-size: 17px;
-    }
-
-    .brand-tagline {
-      display: none;
-    }
+    display: none;
   }
 
   .page-content {
