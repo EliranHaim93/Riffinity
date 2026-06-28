@@ -2,7 +2,7 @@
 
 .app-shell {
   @include mix.flex-column();
-  height: 100dvh;
+  height: 100vh;
   background: #0a0d14;
 }
 
@@ -32,7 +32,7 @@
 
   .beginner-badge {
     background: rgba(76, 175, 80, 0.2);
-    color: #81C784;
+    color: #81c784;
     border: 1px solid rgba(76, 175, 80, 0.3);
   }
 }
